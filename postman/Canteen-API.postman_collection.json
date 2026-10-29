@@ -1,0 +1,606 @@
+{
+  "info": {
+    "_postman_id": "498524d1-d21c-4643-940b-4bebf555f002",
+    "name": "Canteen API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01-Read",
+      "item": [
+        {
+          "name": "TC01",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"status = ok\", () => pm.expect(pm.response.json().status).to.eql(\"ok\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ],
+              "raw": "{{baseUrl}}/health"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC02",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"Có 4 món mẫu\", () => pm.expect(pm.response.json()).to.have.lengthOf(4));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items"
+              ],
+              "raw": "{{baseUrl}}/menu-items"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC03",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "const items = pm.response.json();",
+                  "pm.test(\"Chỉ có món bun_pho\", () => {",
+                  "    items.forEach(i => pm.expect(i.category).to.eql(\"bun_pho\"));",
+                  "});",
+                  "pm.test(\"Giá giảm dần\", () => {",
+                  "    for (let k = 1; k < items.length; k++)",
+                  "        pm.expect(items[k - 1].price).to.be.at.least(items[k].price);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items"
+              ],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "bun_pho"
+                },
+                {
+                  "key": "sort",
+                  "value": "price"
+                },
+                {
+                  "key": "order",
+                  "value": "desc"
+                }
+              ],
+              "raw": "{{baseUrl}}/menu-items?category=bun_pho&sort=price&order=desc"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC04",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "const list = pm.response.json();",
+                  "pm.test(\"Có 1 món đã hết\", () => pm.expect(list).to.have.lengthOf(1));",
+                  "pm.test(\"Là Bánh đa cua\", () => pm.expect(list[0].name).to.eql(\"Bánh đa cua\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items"
+              ],
+              "query": [
+                {
+                  "key": "available",
+                  "value": "false"
+                }
+              ],
+              "raw": "{{baseUrl}}/menu-items?available=false"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC05",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"Đúng id = 1\", () => pm.expect(pm.response.json().id).to.eql(1));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/menu-items/1"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC06",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"404 Not Found\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "999"
+              ],
+              "raw": "{{baseUrl}}/menu-items/999"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC07",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"422 Unprocessable Entity\", () => pm.response.to.have.status(422));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "0"
+              ],
+              "raw": "{{baseUrl}}/menu-items/0"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02-Create",
+      "item": [
+        {
+          "name": "TC08",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.collectionVariables.set(\"itemName\", \"Món thử \" + Date.now());"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"201 Created\", () => pm.response.to.have.status(201));",
+                  "const item = pm.response.json();",
+                  "pm.test(\"Có header Location đúng\", () => {",
+                  "    pm.expect(pm.response.headers.get(\"Location\"))",
+                  "      .to.eql(\"/menu-items/\" + item.id);",
+                  "});",
+                  "pm.test(\"Mặc định available = true\", () => pm.expect(item.available).to.be.true);",
+                  "pm.collectionVariables.set(\"itemId\", item.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items"
+              ],
+              "raw": "{{baseUrl}}/menu-items"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"{{itemName}}\", \"category\": \"an_vat\", \"price\": 15000}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "03-Update",
+      "item": [
+        {
+          "name": "TC09",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"200 OK\", () => pm.response.to.have.status(200));",
+                  "pm.test(\"Giá đổi thành 20000\", () => pm.expect(pm.response.json().price).to.eql(20000));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "{{itemId}}"
+              ],
+              "raw": "{{baseUrl}}/menu-items/{{itemId}}"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"{{itemName}} sửa\", \"category\": \"an_vat\", \"price\": 20000, \"available\": true}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC10",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "const it = pm.response.json();",
+                  "pm.test(\"available = false\", () => pm.expect(it.available).to.be.false);",
+                  "pm.test(\"Giá giữ nguyên 20000\", () => pm.expect(it.price).to.eql(20000));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "{{itemId}}"
+              ],
+              "raw": "{{baseUrl}}/menu-items/{{itemId}}"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"available\": false}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC11",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"409 Conflict\", () => pm.response.to.have.status(409));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "{{itemId}}"
+              ],
+              "raw": "{{baseUrl}}/menu-items/{{itemId}}"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"Trà chanh\"}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04-Delete",
+      "item": [
+        {
+          "name": "TC12",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"204 No Content\", () => pm.response.to.have.status(204));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "{{itemId}}"
+              ],
+              "raw": "{{baseUrl}}/menu-items/{{itemId}}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC13",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "pm.test(\"404 Not Found\", () => pm.response.to.have.status(404));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items",
+                "{{itemId}}"
+              ],
+              "raw": "{{baseUrl}}/menu-items/{{itemId}}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "05-Data-driven",
+      "item": [
+        {
+          "name": "TC14",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "packages": {},
+                "exec": [
+                  "const c = pm.iterationData.get(\"case\");",
+                  "const expected = Number(pm.iterationData.get(\"expected\"));",
+                  "pm.test(`[${c}] trả về ${expected}`, () => {",
+                  "    pm.response.to.have.status(expected);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "menu-items"
+              ],
+              "raw": "{{baseUrl}}/menu-items"
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\"name\": \"{{name}}\", \"category\": \"{{category}}\", \"price\": {{price}}}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [
+          "pm.test(\"Phản hồi dưới 500 ms\", () => {",
+          "    pm.expect(pm.response.responseTime).to.be.below(500);",
+          "});",
+          "if (pm.response.code !== 204) {",
+          "    pm.test(\"Trả về JSON\", () => {",
+          "        pm.response.to.have.header(\"Content-Type\", \"application/json\");",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "itemName",
+      "value": ""
+    },
+    {
+      "key": "itemId",
+      "value": ""
+    }
+  ]
+}
